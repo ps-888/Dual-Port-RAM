@@ -1,0 +1,56 @@
+module tb();
+  reg [7:0] data_1, data_2;
+  reg [9:0] addr_1, addr_2;
+  reg rd_wr1, rd_wr2, clk;
+  wire [7:0] o1, o2;
+
+  
+  dual_port_RAM dut (
+    .data_1(data_1), .data_2(data_2), 
+    .addr_1(addr_1), .addr_2(addr_2), 
+    .clk(clk), .rd_wr1(rd_wr1), .rd_wr2(rd_wr2), 
+    .o1(o1), .o2(o2)
+  );
+
+  
+  initial begin
+    clk = 1'b0;
+    forever #10 clk = ~clk;
+  end
+
+  initial begin
+    $dumpfile("waveform.vcd");  
+    $dumpvars(0, tb);
+    data_1 = 8'b00011011;
+    data_2 = 8'b01100110;
+    addr_1 = 10'd956;
+    addr_2 = 10'd32;
+    rd_wr1 = 1'b1;  // Write 
+    rd_wr2 = 1'b1;
+    #50;
+
+    addr_1 = 10'd956;
+    addr_2 = 10'd32;
+    rd_wr1 = 1'b0;  // Read 
+    rd_wr2 = 1'b0;
+    #50;
+
+    data_1 = 8'b10010011;
+    data_2 = 8'b01110111;
+    addr_1 = 10'd224;
+    addr_2 = 10'd6;
+    rd_wr1 = 1'b1;
+    rd_wr2 = 1'b1;
+    #50;
+
+    addr_1 = 10'd224;
+    addr_2 = 10'd6;
+    rd_wr1 = 1'b0;
+    rd_wr2 = 1'b0;
+    #30;
+
+    $display("Simulation complete");
+    $finish;
+  end
+
+endmodule
